@@ -85,26 +85,41 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
   }
 
   Widget getProfile() {
-    return profile.image.isEmpty
+    bool isEmpty = profile == null
+        ? true
+        : profile.image == null ? true : profile.image.isEmpty;
+
+    return isEmpty
         ? Icon(
-      Icons.perm_identity,
-      size: 48,
-    )
+            Icons.perm_identity,
+            size: 48,
+          )
         : FadeInImage.assetNetwork(
-      width: 80,
-      height: 80,
-      image: profile.image,
-      placeholder: 'images/iv_empty.png',
-    );
+            width: 80,
+            height: 80,
+            image: profile.image,
+            placeholder: 'images/iv_empty.png',
+          );
   }
 
   String getProfileName() {
-    return profile.name ?? widget.konnectDetails.basicInfo.organisation;
+    bool isEmpty = profile == null
+        ? true
+        : profile.name == null ? true : profile.name.isEmpty;
+
+    return isEmpty
+        ? widget.konnectDetails.basicInfo.organisation
+        : profile.name;
   }
 
   String getProfileContact() {
-    return profile.contact ??
-        widget.konnectDetails.basicInfo.categoryOfBusiness;
+    bool isEmpty = profile == null
+        ? true
+        : profile.contact == null ? true : profile.contact.isEmpty;
+
+    return isEmpty
+        ? widget.konnectDetails.basicInfo.categoryOfBusiness
+        : profile.contact;
   }
 
   @override
@@ -116,6 +131,14 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
         title: Text('नमस्कार / welcome'),
         actions: <Widget>[
           getCart(),
+          IconButton(
+              icon: Icon(
+                Icons.share,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Share.share(AppConstants.SHARE_APP);
+              }),
         ],
       ),
       drawer: Drawer(
@@ -146,7 +169,7 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
             ListTile(
               leading: Icon(Icons.group),
               title: Text('Party Master'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -161,7 +184,7 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
             ListTile(
               leading: Icon(Icons.shopping_cart),
               title: Text('Item Master'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -175,7 +198,7 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
             ListTile(
               leading: Icon(Icons.library_books),
               title: Text('Sales Orders'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -190,7 +213,7 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
             ListTile(
               leading: Icon(Icons.account_balance),
               title: Text('Ledger'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -205,7 +228,7 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
             ListTile(
               leading: Icon(Icons.payment),
               title: Text('Payment/Receipt'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -220,7 +243,7 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
             ListTile(
               leading: Icon(Icons.monetization_on),
               title: Text('Sales Invoice'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -235,7 +258,7 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
             ListTile(
               leading: Icon(Icons.description),
               title: Text('Proforma Invoice'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -250,34 +273,9 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
             ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text('Logout (Link User)'),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
-                AwesomeDialog(
-                    context: context,
-                    dialogType: DialogType.INFO,
-                    animType: AnimType.BOTTOMSLIDE,
-                    title: 'Logout',
-                    desc: 'Logout',
-                    body: Text(
-                      'Are you sure want to logout',
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                    btnCancelOnPress: () {},
-                    btnCancelText: 'Cancel',
-                    btnOkText: 'Logout',
-                    btnOkOnPress: () {
-                      UserLogin login = UserLogin.formJson(null);
-                      String key = AppConstants.USER_LOGIN_CREDENTIAL;
-                      AppPreferences.setString(key, jsonEncode(login.toJson()));
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                DashboardScreen(widget.konnectDetails),
-                          ),
-                          (Route<dynamic> route) => false);
-                    }).show();
+                Logout(context).awesomeDialog(widget.konnectDetails);
               },
             ),
             Divider(),
@@ -494,6 +492,25 @@ class _LinkUserDashboardState extends State<LinkUserDashboardScreen> {
                 ],
               ),
             ),
+          ),
+          GFButton(
+            size: 50,
+            fullWidthButton: true,
+            type: GFButtonType.solid,
+            color: Colors.blue.shade300,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => InAppWebViewPage(),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.video_call,
+              color: Colors.white,
+            ),
+            text: '',
           ),
         ],
       ),

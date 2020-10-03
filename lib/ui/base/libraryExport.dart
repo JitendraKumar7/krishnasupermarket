@@ -27,6 +27,8 @@ export 'package:krishnasupermarket/utils/GroupedCheckbox.dart';
 export 'package:krishnasupermarket/utils/KonnectButton.dart';
 export 'package:krishnasupermarket/utils/PinchZoomImage.dart';
 export 'package:krishnasupermarket/utils/RadioButtonGroup.dart';
+export 'package:krishnasupermarket/utils/image_utilities.dart';
+export 'package:krishnasupermarket/utils/logout.dart';
 
 export 'package:krishnasupermarket/ui/AdminLogin.dart';
 export 'package:krishnasupermarket/ui/AboutScreen.dart';
@@ -34,6 +36,7 @@ export 'package:krishnasupermarket/ui/BankingScreen.dart';
 export 'package:krishnasupermarket/ui/ContactScreen.dart';
 export 'package:krishnasupermarket/ui/DashboardScreen.dart';
 export 'package:krishnasupermarket/ui/GalleryScreen.dart';
+export 'package:krishnasupermarket/ui/InAppWebViewPage.dart';
 export 'package:krishnasupermarket/ui/LocationScreen.dart';
 export 'package:krishnasupermarket/ui/AdminLogin.dart';
 export 'package:krishnasupermarket/ui/OffersScreen.dart';
@@ -78,8 +81,11 @@ export 'package:krishnasupermarket/ui/view/PurchaseInvoiceView.dart';
 export 'package:krishnasupermarket/ui/view/SalesInvoiceView.dart';
 export 'package:krishnasupermarket/ui/view/SalesOrderView.dart';
 
+
+
 export 'dart:convert';
 export '../../main.dart';
+export 'package:share/share.dart';
 export 'package:flutter/services.dart';
 export 'package:flutter/material.dart';
 export 'package:flutter/rendering.dart';

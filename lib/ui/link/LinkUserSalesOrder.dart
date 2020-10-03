@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class LinkUserSalesOrderScreen extends StatefulWidget {
-  final int id;
+  final id;
 
   const LinkUserSalesOrderScreen({Key key, this.id}) : super(key: key);
 
@@ -18,7 +18,7 @@ class _LinkUserSalesOrderState extends State<LinkUserSalesOrderScreen> {
 
     ApiAdmin().getLinkUserSalesOrder(widget.id).then((value) => {
           setState(() {
-            Map<String, dynamic> response = value.data;
+            Map response = value.data;
 
             _list = List<Map>();
             if (response['status'] == '200') {
@@ -40,23 +40,23 @@ class _LinkUserSalesOrderState extends State<LinkUserSalesOrderScreen> {
           icon: Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text("Sales Order"),
+        title: Text('Sales Order'),
       ),
       body: _list == null
           ? Container(
-              width: MediaQuery.of(context).size.height,
               height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _list.isEmpty
               ? Container(
-                  width: MediaQuery.of(context).size.height,
                   height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
-                      "Empty",
+                      'Empty',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -65,38 +65,39 @@ class _LinkUserSalesOrderState extends State<LinkUserSalesOrderScreen> {
                   ),
                 )
               : ListView(
+                  reverse: true,
                   children: _list.map((item) {
-                  int id = item['booking_id'];
-                  return Column(
-                    children: <Widget>[
-                      ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  SalesOrderViewScreen(
-                                id: id.toString(),
+                    int id = item['booking_id'];
+                    return Column(
+                      children: <Widget>[
+                        ListTile(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    SalesOrderViewScreen(
+                                  id: id.toString(),
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        title: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Text('#$id'),
-                            ),
-                            Text(item['status'].toString().toUpperCase())
-                          ],
+                            );
+                          },
+                          title: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(item['firm_name']),
+                              ),
+                              Text(item['status'].toString().toUpperCase())
+                            ],
+                          ),
+                          subtitle: Text(
+                            item['timestamp'],
+                          ),
                         ),
-                        subtitle: Text(
-                          item['timestamp'],
-                        ),
-                      ),
-                      Divider(),
-                    ],
-                  );
-                }).toList()),
+                        Divider(),
+                      ],
+                    );
+                  }).toList()),
     );
   }
 }

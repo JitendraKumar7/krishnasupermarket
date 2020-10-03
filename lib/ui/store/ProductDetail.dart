@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class ProductDetailScreen extends StatefulWidget {
-  final int id;
+  final id;
 
   ProductDetailScreen(this.id);
 
@@ -21,40 +21,40 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     super.initState();
     //76818
     ApiClient().getItemById(widget.id).then((value) => {
-      setState(() {
-        Map<String, dynamic> response = value.data;
-
-        if (response['status'] == '200') {
           setState(() {
-            _productDetails = ProductDetails.fromJson(response['result']);
-            _tradePrice = _productDetails.tradePrice;
-            _price = _productDetails.price;
-            print(response['result']);
+            Map<String, dynamic> response = value.data;
 
-            images.add(_productDetails.image);
-            if (_productDetails.image2.length > 45) {
-              images.add(_productDetails.image2);
-            }
-            if (_productDetails.image3.length > 45) {
-              images.add(_productDetails.image3);
-            }
-          });
-        }
+            if (response['status'] == '200') {
+              setState(() {
+                _productDetails = ProductDetails.fromJson(response['result']);
+                _tradePrice = _productDetails.tradePrice;
+                _price = _productDetails.price;
+                print(response['result']);
 
-        print(value.data);
-      }),
-    });
+                images.add(_productDetails.image);
+                if (_productDetails.image2.length > 45) {
+                  images.add(_productDetails.image2);
+                }
+                if (_productDetails.image3.length > 45) {
+                  images.add(_productDetails.image3);
+                }
+              });
+            }
+
+            print(value.data);
+          }),
+        });
 
     String key = AppConstants.USER_CART_DATA;
     AppPreferences.getString(key).then((value) => {
-      setState(() {
-        if (value != null) {
-          for (Map json in jsonDecode(value)) {
-            cart.add(CartSummery.fromJson(json));
-          }
-        }
-      })
-    });
+          setState(() {
+            if (value != null) {
+              for (Map json in jsonDecode(value)) {
+                cart.add(CartSummery.fromJson(json));
+              }
+            }
+          })
+        });
   }
 
   Widget showStock() {
@@ -195,130 +195,145 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       body: _productDetails == null
           ? GFLoader()
           : Column(children: <Widget>[
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(left: 12, right: 12),
-            child: ListView(children: <Widget>[
-              GFCarousel(
-                  height: 200,
-                  items: images.map((_image) {
-                    return FadeInImage.assetNetwork(
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 12, right: 12),
+                  child: ListView(children: <Widget>[
+                    GFCarousel(
                       height: 200,
-                      image: _image,
-                      width: _screenWidth,
-                      placeholder: 'images/iv_empty.png',
-                    );
-                  }).toList(),
-                  autoPlay: true,
-                  pagination: true,
-                  viewportFraction: 1.0,
-                  onPageChanged: (index) {
-                    setState(() {
-                      index;
-                    });
-                  }),
-              Divider(color: Colors.white),
-              Text(
-                _productDetails.name.toUpperCase(),
-                style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
-              ),
-              Divider(color: Colors.white),
-              Row(children: <Widget>[
-                Text(
-                  '₹ $_tradePrice /-',
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
+                      items: images.map((_image) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    ImageSliderViewScreen(
+                                  images: images,
+                                  position: 0,
+                                ),
+                              ),
+                            );
+                          },
+                          child: FadeInImage.assetNetwork(
+                            height: 200,
+                            image: _image,
+                            width: _screenWidth,
+                            placeholder: 'images/iv_empty.png',
+                          ),
+                        );
+                      }).toList(),
+                      autoPlay: true,
+                      pagination: true,
+                      viewportFraction: 1.0,
+                      onPageChanged: (index) {
+                        setState(() {
+                          index;
+                        });
+                      },
+                    ),
+                    Divider(color: Colors.white),
+                    Text(
+                      _productDetails.name.toUpperCase(),
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Divider(color: Colors.white),
+                    Row(children: <Widget>[
+                      Text(
+                        '₹ $_tradePrice /-',
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        '₹ $_price /-',
+                        style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.red.shade900,
+                            decoration: TextDecoration.lineThrough),
+                      ),
+                    ]),
+                    Divider(height: 6, color: Colors.white),
+                    Text(
+                      '(GST@' + _productDetails.gstRate + '% Exclusive)',
+                      style:
+                          TextStyle(fontSize: 12, color: Colors.green.shade400),
+                    ),
+                    Divider(
+                        height: 36, thickness: 6, color: Colors.grey.shade100),
+                    showStock(),
+                    showOffers(),
+                    showVariant(_screenWidth),
+                    showSpecification(),
+                    showReturnPolicy(),
+                  ]),
                 ),
-                Text(
-                  '₹ $_price /-',
-                  style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.red.shade900,
-                      decoration: TextDecoration.lineThrough),
-                ),
-              ]),
-              Divider(height: 6, color: Colors.white),
-              Text(
-                '(GST@' + _productDetails.gstRate + '% Exclusive)',
-                style:
-                TextStyle(fontSize: 12, color: Colors.green.shade400),
               ),
-              Divider(
-                  height: 36, thickness: 6, color: Colors.grey.shade100),
-              showStock(),
-              showOffers(),
-              showVariant(_screenWidth),
-              showSpecification(),
-              showReturnPolicy(),
-            ]),
-          ),
-        ),
-        MaterialButton(
-            minWidth: MediaQuery.of(context).size.width,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(1)),
-            height: 55,
-            onPressed: () {
-              if (_productDetails.itemList.isEmpty) {
-                CartSummery existingItem = cart.firstWhere(
-                        (itemToCheck) => itemToCheck.id == _productDetails.id,
-                    orElse: () => null);
-                if (existingItem == null) {
-                  setState(() {
-                    cart.add(
-                        CartSummery.fromProductDetails(_productDetails));
-                    String key = AppConstants.USER_CART_DATA;
-                    AppPreferences.setString(key, jsonEncode(cart));
-                    print(jsonEncode(cart));
-                    print('Item Added');
-                  });
+              MaterialButton(
+                  minWidth: MediaQuery.of(context).size.width,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(1)),
+                  height: 55,
+                  onPressed: () {
+                    if (_productDetails.itemList.isEmpty) {
+                      CartSummery existingItem = cart.firstWhere(
+                          (itemToCheck) => itemToCheck.id == _productDetails.id,
+                          orElse: () => null);
+                      if (existingItem == null) {
+                        setState(() {
+                          cart.add(
+                              CartSummery.fromProductDetails(_productDetails));
+                          String key = AppConstants.USER_CART_DATA;
+                          AppPreferences.setString(key, jsonEncode(cart));
+                          print(jsonEncode(cart));
+                          print('Item Added');
+                        });
 
-                  AwesomeDialog(
-                      title: 'Success',
-                      context: context,
-                      animType: AnimType.SCALE,
-                      dismissOnTouchOutside: false,
-                      btnOkIcon: Icons.check_circle,
-                      dialogType: DialogType.SUCCES,
-                      desc: 'Item add to cart successfully!',
-                      btnCancelText: 'Back',
-                      btnCancelOnPress: () {
-                        Navigator.of(context).pop(true);
-                      }).show();
-                } else {
-                  AwesomeDialog(
-                      title: 'Error',
-                      context: context,
-                      animType: AnimType.SCALE,
-                      dismissOnTouchOutside: false,
-                      btnOkIcon: Icons.check_circle,
-                      dialogType: DialogType.ERROR,
-                      desc: 'Item already added!',
-                      btnCancelText: 'Cancel',
-                      btnCancelOnPress: () {})
-                      .show();
-                }
-              }
-              //
-              else {
-                showGroupedCheckbox(_productDetails.itemList);
-              }
-            },
-            color: Colors.lightBlueAccent,
-            child: Text(
-              'ADD TO CART',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-            )),
-      ]),
+                        AwesomeDialog(
+                            title: 'Success',
+                            context: context,
+                            animType: AnimType.SCALE,
+                            dismissOnTouchOutside: false,
+                            btnOkIcon: Icons.check_circle,
+                            dialogType: DialogType.SUCCES,
+                            desc: 'Item add to cart successfully!',
+                            btnCancelText: 'Back',
+                            btnCancelOnPress: () {
+                              Navigator.of(context).pop(true);
+                            }).show();
+                      } else {
+                        AwesomeDialog(
+                                title: 'Error',
+                                context: context,
+                                animType: AnimType.SCALE,
+                                dismissOnTouchOutside: false,
+                                btnOkIcon: Icons.check_circle,
+                                dialogType: DialogType.ERROR,
+                                desc: 'Item already added!',
+                                btnCancelText: 'Cancel',
+                                btnCancelOnPress: () {})
+                            .show();
+                      }
+                    }
+                    //
+                    else {
+                      showGroupedCheckbox(_productDetails.itemList);
+                    }
+                  },
+                  color: Colors.lightBlueAccent,
+                  child: Text(
+                    'ADD TO CART',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  )),
+            ]),
     );
   }
 
@@ -386,7 +401,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     AwesomeDialog(
       context: context,
       animType: AnimType.SCALE,
-      dialogType: DialogType.INFO,
+      dialogType: DialogType.NO_HEADER,
       body: Container(
         width: 400,
         child: GroupedCheckbox(
@@ -401,33 +416,37 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             checkColor: Colors.blue,
             activeColor: Colors.grey),
       ),
-      title: 'This is Ignored',
-      desc: 'This is also Ignored',
       btnCancelOnPress: () {},
       btnOkOnPress: () {
         print('button clicked btnOkOnPress');
         selectedItemList.forEach((item) => {
-          print('Params One ' + item.paramsOne),
-          print('Params Two ' + item.paramsTwo),
-          setState(() {
-            cart.add(CartSummery(
-                _productDetails.id,
-                _productDetails.unit,
-                _productDetails.image,
-                item.paramsTradePrice,
-                _productDetails.gstRate,
-                _productDetails.name,
-                _productDetails.moq,
-                _productDetails.stock,
-                _productDetails.checkStock,
-                item.paramsOne + ' ' + item.paramsTwo));
-            String key = AppConstants.USER_CART_DATA;
-            AppPreferences.setString(key, jsonEncode(cart));
-            print(jsonEncode(cart));
-            print("Item Added");
-            Navigator.of(context).pop(true);
-          }),
-        });
+              print('Params One ' + item.paramsOne),
+              print('Params Two ' + item.paramsTwo),
+              setState(() {
+                cart.add(
+                  CartSummery(
+                    _productDetails.id,
+                    _productDetails.unit,
+                    _productDetails.image,
+                    item.paramsTradePrice,
+                    _productDetails.gstRate,
+                    _productDetails.name,
+                    _productDetails.moq,
+                    _productDetails.stock,
+                    _productDetails.checkStock,
+                    item.paramsOne + ' ' + item.paramsTwo,
+                    _productDetails.price,
+                    _productDetails.discount,
+                    _productDetails.discountOn,
+                  ),
+                );
+                String key = AppConstants.USER_CART_DATA;
+                AppPreferences.setString(key, jsonEncode(cart));
+                print(jsonEncode(cart));
+                print('Item Added');
+                Navigator.of(context).pop(true);
+              }),
+            });
       },
     ).show();
   }

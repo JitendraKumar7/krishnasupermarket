@@ -12,11 +12,12 @@ class BankingScreen extends StatelessWidget {
     final List<Bank> _bank = konnectDetails.bank;
     return Scaffold(
       appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text("Banking Details")),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('Banking Details'),
+      ),
       body: ListView(children: <Widget>[
         CarouselSlider(images: _coverImage, info: _basicInfo),
         Column(
@@ -72,13 +73,14 @@ class BankingScreen extends StatelessWidget {
   }
 
   String createUPI(String name, String address) {
-    String upi = "upi://pay?pn=" +
+    String upi = 'upi://pay?pn=' +
         name +
-        "&pa=" +
+        '&pa=' +
         address +
-        "&cu=INR" +
-        "&tn=KMB" +
-        "&url=http://konnectmybusiness.com";
-    return upi.replaceAll(" ", "+");
+        '&cu=INR' +
+        '&tn=KMB' +
+        '&url=http://konnectmybusiness.com';
+    //upi://pay?pa=192201502690@ICIC1000922.ifsc.npci&pn=JITENDRA%20KUMAR&mc=0000&tn=Pay%20to%20JITENDRA%20KUMAR&cu=INR
+    return upi.replaceAll(' ', '+');
   }
 }

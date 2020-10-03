@@ -1,8 +1,8 @@
 import '../base/libraryExport.dart';
 
 class PartyPaymentScreen extends StatefulWidget {
-  final String name;
-  final int id;
+  final name;
+  final id;
 
   const PartyPaymentScreen({Key key, this.id, this.name}) : super(key: key);
 
@@ -48,16 +48,16 @@ class _PartyPaymentState extends State<PartyPaymentScreen> {
       ),
       body: _list == null
           ? Container(
-              width: MediaQuery.of(context).size.height,
-              height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _list.isEmpty
               ? Container(
-                  width: MediaQuery.of(context).size.height,
-                  height: MediaQuery.of(context).size.height,
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
                       'Empty',

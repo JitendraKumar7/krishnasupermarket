@@ -1,7 +1,7 @@
 import '../base/libraryExport.dart';
 
 class LinkUserPartyMasterScreen extends StatefulWidget {
-  final  int id;
+  final id;
 
   const LinkUserPartyMasterScreen({Key key, this.id}) : super(key: key);
 
@@ -40,20 +40,20 @@ class _LinkUserPartyMasterState extends State<LinkUserPartyMasterScreen> {
           icon: Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text("Party Master"),
+        title: Text('Party Master'),
       ),
       body: _list == null
           ? Container(
-              width: MediaQuery.of(context).size.height,
               height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Center(
                 child: GFLoader(loaderColorOne: Colors.white),
               ),
             )
           : _list.isEmpty
               ? Container(
-                  width: MediaQuery.of(context).size.height,
                   height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
                   child: Center(
                     child: Text(
                       'Empty',
@@ -74,14 +74,14 @@ class _LinkUserPartyMasterState extends State<LinkUserPartyMasterScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  PartyMasterViewScreen(id: item['master_id']),
+                                  PartyMasterViewScreen(id: item['id']),
                             ),
                           );
                         },
                         title: Padding(
                           padding: EdgeInsets.all(10),
                           child: Text(
-                            item['Name'] ?? 'Name Error',
+                            item['party_master_name'] ?? 'Name Error',
                           ),
                         ),
                       ),
