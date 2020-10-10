@@ -34,7 +34,7 @@ android {
             keyPassword 'krishnasupermarket'
         }
     }
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -46,8 +46,8 @@ android {
 
     defaultConfig {
         applicationId "com.app.krishnasupermarket"
-        minSdkVersion 16
-        targetSdkVersion 29
+        minSdkVersion 17
+        targetSdkVersion 30
 
         // make sure you have these two variables
         versionCode flutterVersionCode.toInteger()

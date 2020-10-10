@@ -1,6 +1,6 @@
 class AppConstants {
-  static const int user_id = 5379;
-  static const int konnect_id = 5745;
+  static const int user_id = 406;
+  static const int konnect_id = 1330;
 
   int get userId => user_id;
 

@@ -4,6 +4,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'ui/base/libraryExport.dart';
 import 'dart:async';
+import 'dart:math';
 import 'dart:io';
 import 'dart:ui';
 
@@ -12,25 +13,23 @@ var appLaunch;
 final navigatorKey = GlobalKey<NavigatorState>();
 final notificationsPlugin = FlutterLocalNotificationsPlugin();
 
-Future<void> _showNotification(int id, Map<String, dynamic> message) async {
-  // Show a notification after every 15 minute with the first
-  // appearance happening a minute after invoking the method
-
-  /*final MethodChannel platform =
-      MethodChannel('crossingthestreams.io/resourceResolver');
-  String alarmUri = await platform.invokeMethod('getAlarmUri');*/
+Future<void> _showNotification(int id, Map message) async {
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
     'mrktradexpvtltd1', 'mrk tradex', 'mrk tradex pvt ltd',
     //sound: RawResourceAndroidNotificationSound('slow_spring_board'),
-    importance: Importance.Max,
-    priority: Priority.High,
+    importance: Importance.max,
+    priority: Priority.high,
     playSound: true,
   );
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+  var macOSPlatformChannelSpecifics = MacOSNotificationDetails();
 
   // initialise channel platform for both Android and iOS device.
   var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    android: androidPlatformChannelSpecifics,
+    macOS: macOSPlatformChannelSpecifics,
+    iOS: iOSPlatformChannelSpecifics,
+  );
   await notificationsPlugin.show(
     id,
     '${message['data']['title']}',
@@ -40,8 +39,8 @@ Future<void> _showNotification(int id, Map<String, dynamic> message) async {
   );
 }
 
-Future<dynamic> onBackgroundMessageHandler(Map<String, dynamic> message) async {
-  _showNotification(3, message);
+Future<dynamic> onBackgroundMessageHandler(Map message) async {
+  _showNotification(Random().nextInt(100), message);
   print('onBackgroundMessage: $message');
   return Future<void>.value();
 }
@@ -56,16 +55,20 @@ class NotificationHandler {
 
   NotificationHandler._internal();
 
-
   Future<void> initialise() async {
     var initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     var initializationSettingsIOS = IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidReceiveLocalNotification);
 
+    var initializationSettingsMacOS = MacOSInitializationSettings();
+
     var initializationSettings = InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
+      android: initializationSettingsAndroid,
+      macOS: initializationSettingsMacOS,
+      iOS: initializationSettingsIOS,
+    );
 
     notificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
@@ -91,18 +94,22 @@ class NotificationHandler {
 
   Future<void> onSelectNotification(String payload) async {
     Map result = jsonDecode(payload);
-    String url = result['data']['url'];
+    String url = result['data']['url'] ?? '';
     if (appLaunch?.didNotificationLaunchApp ?? false) {
       print('SelectNotificationLaunchApp $url');
     }
     // app already opened
-    else if (url.isNotEmpty) {
+    else if (url?.isNotEmpty ?? false) {
       print('SelectNotification url $url');
       await navigatorKey.currentState.push(
         MaterialPageRoute(
           builder: (context) => InAppWebViewPage(url: url),
         ),
       );
+    }
+    // url null
+    else {
+      print('SelectNotification url false');
     }
   }
 
@@ -112,7 +119,6 @@ class NotificationHandler {
       int id, String title, String body, String payload) async {
     print('onDidReceiveLocalNotification $payload');
   }
-
 }
 
 Future<void> main() async {
@@ -171,11 +177,11 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     if (widget.splash) {
       if (appLaunch?.didNotificationLaunchApp ?? false) {
-        print('InAppWebViewPage ${appLaunch?.payload}');
+        print('SplashScreenState ${appLaunch?.payload}');
         Map result = jsonDecode(appLaunch?.payload);
-        String url = result['data']['url'];
-        print('SelectNotification url $url');
-        if (url.isNotEmpty) {
+        String url = result['data']['url'] ?? '';
+        print('SplashScreenState url $url');
+        if (url?.isNotEmpty ?? false) {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
@@ -183,6 +189,11 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             (Route<dynamic> route) => false,
           );
+        }
+        // url is empty
+        else {
+          print('SplashScreenState false');
+          openDashboard();
         }
       }
       // normal app

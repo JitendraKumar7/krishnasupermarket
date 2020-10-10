@@ -71,7 +71,6 @@ export 'package:krishnasupermarket/ui/store/OrderSummery.dart';
 export 'package:krishnasupermarket/ui/store/ProductDetail.dart';
 export 'package:krishnasupermarket/ui/store/ProductList.dart';
 export 'package:krishnasupermarket/ui/store/ProductSearch.dart';
-export 'package:krishnasupermarket/ui/store/WebViewFlutter.dart';
 
 export 'package:krishnasupermarket/ui/view/LedgerView.dart';
 export 'package:krishnasupermarket/ui/view/PartyMasterView.dart';
