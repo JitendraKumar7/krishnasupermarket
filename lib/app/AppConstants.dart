@@ -12,7 +12,7 @@ class AppConstants {
   static const String USER_LOGIN_CREDENTIAL = 'com.meo.user.login.credential';
 
   static const String getServerKey =
-      'AAAAc5_l7dk:APA91bGq3HyBqzeyJZfSeS-zRWFQIs_cVjmM498VmE92_e3QPQT-Ox7-CH_8AT9345ye7Cbm3hpHix43R8griTqtdimnlpNw-zCF9IE4PB8CrCf5Bmu2QUzUSEs82WN0xhdSon-qym3-';
+      'AAAATuVsCDA:APA91bFI5JzbQwpqM2-lkem-tOrwo3nHZhb9ibbptcuRRgjWPR78HjyavIZgHm46YDJjlhX-yySIgjzAJHVrepAAjxjRqgf7TKsy2OiJzCxNXu4VPp1qo34xTaaIk4rXHfFe5czNoq_d';
 
   static const String SHARE_APP = 'check out my app \n\n'
       'https://play.google.com/store/apps/details?id=com.app.krishnasupermarket';

@@ -53,6 +53,27 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
     initCart();
   }
 
+  void itemRemoved(CartSummery item) {
+    AwesomeDialog(
+        title: 'Remove',
+        context: context,
+        dialogType: DialogType.ERROR,
+        animType: AnimType.BOTTOMSLIDE,
+        desc: 'Are you sure, you want to remove',
+        btnCancelOnPress: () {
+          print('Cancel On Pressed');
+        },
+        btnOkOnPress: () {
+          setState(() {
+            cartSummery.removeWhere((itemToCheck) => itemToCheck.id == item.id);
+            String key = AppConstants.USER_CART_DATA;
+            AppPreferences.setString(key, jsonEncode(cartSummery));
+            print(jsonEncode(cartSummery));
+            print('Item Removed');
+          });
+        }).show();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,6 +121,10 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                   itemCount: cartSummery.length,
                   itemBuilder: (BuildContext context, int index) {
                     CartSummery item = cartSummery[index];
+                    item.controller.addListener(() {
+                      item.quantity = item.controller.text;
+                      print('Quantity ${item.quantity}');
+                    });
                     return Card(
                       elevation: 8,
                       child: Row(children: <Widget>[
@@ -128,29 +153,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                                   icon: Icon(Icons.remove_shopping_cart,
                                       color: Colors.deepOrange),
                                   onPressed: () {
-                                    AwesomeDialog(
-                                        title: 'Remove',
-                                        context: context,
-                                        dialogType: DialogType.ERROR,
-                                        animType: AnimType.BOTTOMSLIDE,
-                                        desc:
-                                            'Are you sure, you want to remove',
-                                        btnCancelOnPress: () {
-                                          print('Cancel On Pressed');
-                                        },
-                                        btnOkOnPress: () {
-                                          setState(() {
-                                            cartSummery.removeWhere(
-                                                (itemToCheck) =>
-                                                    itemToCheck.id == item.id);
-                                            String key =
-                                                AppConstants.USER_CART_DATA;
-                                            AppPreferences.setString(
-                                                key, jsonEncode(cartSummery));
-                                            print(jsonEncode(cartSummery));
-                                            print('Item Removed');
-                                          });
-                                        }).show();
+                                    itemRemoved(item);
                                   },
                                 ),
                               ]),
@@ -166,12 +169,11 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                                 IconButton(
                                   icon: Icon(Icons.remove_circle_outline),
                                   onPressed: () {
-                                    String value = item.controller.text;
-                                    if (int.tryParse(value) > 1) {
-                                      item.controller.text =
-                                          (int.tryParse(value) - 1).toString();
-                                      item.quantity = item.controller.text;
-                                    }
+                                    int value =
+                                        int.tryParse(item.controller.text) ?? 0;
+                                    item.controller.text =
+                                        (value > 1 ? value - 1 : value)
+                                            .toString();
                                   },
                                 ),
                                 Expanded(
@@ -189,29 +191,6 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
                                         int.tryParse(item.controller.text) ?? 0;
                                     item.controller.text =
                                         (value + 1).toString();
-                                    item.quantity = item.controller.text;
-
-                                    //int stock = int.tryParse(item.stock) ?? 0;
-                                    /*if (item.checkStock == '0') {
-                                      item.controller.text = value.toString();
-                                    }
-                                    //
-                                    else if (stock >= value) {
-                                      item.controller.text = value.toString();
-                                    }
-                                    //
-                                    else {
-                                      AwesomeDialog(
-                                              title: 'Overflow',
-                                              context: context,
-                                              desc:
-                                                  'Only $stock items in stock',
-                                              headerAnimationLoop: false,
-                                              animType: AnimType.TOPSLIDE,
-                                              dialogType: DialogType.WARNING,
-                                              btnOkOnPress: () {})
-                                          .show();
-                                    }*/
                                   },
                                 ),
                               ]),
@@ -252,7 +231,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
           },
           color: Colors.lightBlueAccent,
           child: Text(
-            'ORDER SUMMARY',
+            ' ORDER SUMMARY ',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
