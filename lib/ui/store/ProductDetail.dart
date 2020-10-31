@@ -19,7 +19,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   void initState() {
     super.initState();
-    //76818
     ApiClient().getItemById(widget.id).then((value) => {
           setState(() {
             Map<String, dynamic> response = value.data;
@@ -70,34 +69,60 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   Widget showOffers() {
     if (_productDetails.offer.isNotEmpty) {
-      return Column(children: <Widget>[
-        Container(
-          width: MediaQuery.of(context).size.width,
-          child: Padding(
-            padding: EdgeInsets.only(top: 15),
-            child: Text(
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 15),
+          child: Row(children: <Widget>[
+            Text(
               'Offer : ',
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.blueGrey,
               ),
             ),
-          ),
-        ),
-        Container(
-          width: MediaQuery.of(context).size.width,
-          child: Padding(
-            padding: EdgeInsets.only(top: 3, bottom: 15),
-            child: Text(
-              _productDetails.offer,
+            SizedBox(width: 12),
+            Text(
+              '${_productDetails.offer}',
               style: TextStyle(
-                  color: Colors.redAccent,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15),
+                fontSize: 18,
+                color: Colors.deepOrange,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
+          ]),
         ),
-      ]);
+      );
+    }
+    return SizedBox(height: 1);
+  }
+
+  Widget showDiscount() {
+    if (_productDetails.discount.isNotEmpty) {
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        child: Padding(
+          padding: EdgeInsets.only(bottom: 15),
+          child: Row(children: <Widget>[
+            Text(
+              'Discount : ',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.deepOrange,
+              ),
+            ),
+            SizedBox(width: 12),
+            Text(
+              '${_productDetails.discount}%',
+              style: TextStyle(
+                fontSize: 25,
+                color: Colors.blueGrey,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ]),
+        ),
+      );
     }
     return SizedBox(height: 1);
   }
@@ -187,11 +212,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text("Product Detail")),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('Product Detail'),
+      ),
       body: _productDetails == null
           ? GFLoader()
           : Column(children: <Widget>[
@@ -234,7 +260,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                     Divider(color: Colors.white),
                     Text(
-                      _productDetails.name.toUpperCase(),
+                      _productDetails.name == _productDetails.printName
+                          ? _productDetails.printName
+                          : '${_productDetails.printName} (${_productDetails.name})',
                       style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,
@@ -267,6 +295,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         height: 36, thickness: 6, color: Colors.grey.shade100),
                     showStock(),
                     showOffers(),
+                    showDiscount(),
                     showVariant(_screenWidth),
                     showSpecification(),
                     showReturnPolicy(),

@@ -195,8 +195,8 @@ class _PinchZoomOverlayImageState extends State<PinchZoomOverlayImage>
 
   TickerFuture reverse() {
     Offset origin = widget.origin;
-    Offset reverseStartPosition = position;
     double reverseStartScale = scale;
+    Offset reverseStartPosition = position;
 
     reverseAnimationController = AnimationController(
       vsync: this,
